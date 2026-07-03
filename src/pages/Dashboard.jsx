@@ -38,8 +38,8 @@ const Dashboard = () => {
 
   const deleteResume = async (resumeId) => {
     const confirm = window.confirm("Are you sure to delete this resume?");
-    if (!confirm) {
-      setAllResumes(prev = prev.filter(resume => resume._id !== resumeId))
+    if (confirm) {
+      setAllResumes(prev => prev.filter(resume => resume._id !== resumeId))
     }
   }
 
