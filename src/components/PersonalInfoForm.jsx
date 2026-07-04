@@ -14,7 +14,7 @@ const PersonalInfoForm = ({ data, onChange, removeBackground, setRemoveBackgroun
     { key: "location", label: "Location", icon: MapPin, type: "text" },
     { key: "profession", label: "Profession", icon: BriefcaseBusiness, type: "text" },
     { key: "linkedin", label: "LinkedIn Profile", icon: FaLinkedin, type: "url" },
-    { key: "website", label: "Website URL", icon: Globe, type: "url" },
+    { key: "website", label: "Personal Website", icon: Globe, type: "url" },
   ]
 
   return (

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { dummyResumeData } from '../assets/assets';
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIcon, GraduationCap, Sparkles, User } from 'lucide-react';
 import PersonalInfoForm from '../components/PersonalInfoForm';
+import ResumePreview from '../components/ResumePreview';
 
 const ResumeBuilder = () => {
 
@@ -114,7 +115,19 @@ const ResumeBuilder = () => {
           </div>
 
           {/* Right Panel - Preview */}
-          <div></div>
+          <div className='lg:col-span-7 max-lg:mt-6'>
+            <div>
+              {/* buttons */}
+            </div>
+
+            {/* Resume preview */}
+            <ResumePreview
+              data={resumeData}
+              template={resumeData.template}
+              accentColor={resumeData.accent_color}
+              removeBackground={removeBackground}
+            />
+          </div>
         </div>
       </div>
     </div>
