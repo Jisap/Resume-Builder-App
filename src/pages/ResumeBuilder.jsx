@@ -5,6 +5,7 @@ import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIc
 import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
 import TemplateSelector from '../components/TemplateSelector';
+import ColorPicker from '../components/ColorPicker';
 
 const ResumeBuilder = () => {
 
@@ -79,6 +80,11 @@ const ResumeBuilder = () => {
                   <TemplateSelector
                     selectedTemplate={resumeData.template}                                   // Template asociado al id del resume
                     onChange={(template) => setResumeData(prev => ({ ...prev, template }))}  // setter para cambiar el template en el resume
+                  />
+
+                  <ColorPicker
+                    selectedColor={resumeData.accent_color}
+                    onChange={(color) => setResumeData(prev => ({ ...prev, accent_color: color }))}
                   />
                 </div>
 
