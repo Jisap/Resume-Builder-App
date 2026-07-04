@@ -48,10 +48,10 @@ const ColorPicker = ({ selectedColor, onChange }) => {
                   </div>
                 )}
 
-                <p className='text-xs text-center mt-1 text-gray-600'>
-                  {color.name}
-                </p>
               </div>
+              <p className='text-xs text-center mt-1 text-gray-600'>
+                {color.name}
+              </p>
             </div>
           ))}
         </div>
