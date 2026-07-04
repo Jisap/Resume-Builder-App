@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { dummyResumeData } from '../assets/assets';
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIcon, GraduationCap, Sparkles, User } from 'lucide-react';
+import PersonalInfoForm from '../components/PersonalInfoForm';
 
 const ResumeBuilder = () => {
 
@@ -69,6 +70,7 @@ const ResumeBuilder = () => {
               <hr className='absolute top-0 left-0 h-1 bg-gradient-to-r from-green-500 to-green-600 border-none transition-all duration-200'
                 style={{ width: `${activeSectionIndex * 100 / (sections.length - 1)}%` }}
               />
+
               {/* Section Navigation */}
               <div className='flex justify-between items-center mb-6 border-b border-gray-300 py-1'>
                 <div></div>
@@ -95,6 +97,19 @@ const ResumeBuilder = () => {
                 </div>
               </div>
 
+              {/* Form Content */}
+              <div className='space-y-6'>
+                {activeSection.id === "personal" && (
+                  <div>
+                    <PersonalInfoForm
+                      data={resumeData.personal_info}
+                      onChange={(data) => { setResumeData(prev => ({ ...prev, personal_info: data })) }}
+                      removeBackground={removeBackground}
+                      setRemoveBackground={setRemoveBackground}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
