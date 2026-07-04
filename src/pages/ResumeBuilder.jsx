@@ -4,10 +4,11 @@ import { dummyResumeData } from '../assets/assets';
 import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIcon, GraduationCap, Sparkles, User } from 'lucide-react';
 import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
+import TemplateSelector from '../components/TemplateSelector';
 
 const ResumeBuilder = () => {
 
-  const { resumeId } = useParams();
+  const { resumeId } = useParams(); // id desde los params de la url
 
   const [resumeData, setResumeData] = useState({
     _id: "",
@@ -26,8 +27,8 @@ const ResumeBuilder = () => {
   const loadExistingResume = () => {
     const resume = dummyResumeData.find(resume => resume._id === resumeId)
     if (resume) {
-      setResumeData(resume)
-      document.title = resume.title  // Cambio de nomber de la pestaña del navegador
+      setResumeData(resume)          // se carga el resume encontrado con el id
+      document.title = resume.title  // Cambio de nombre de la pestaña del navegador
     }
   };
 
@@ -74,7 +75,14 @@ const ResumeBuilder = () => {
 
               {/* Section Navigation */}
               <div className='flex justify-between items-center mb-6 border-b border-gray-300 py-1'>
-                <div></div>
+                <div className='flex items-center gap-2'>
+                  <TemplateSelector
+                    selectedTemplate={resumeData.template}                                   // Template asociado al id del resume
+                    onChange={(template) => setResumeData(prev => ({ ...prev, template }))}  // setter para cambiar el template en el resume
+                  />
+                </div>
+
+                {/* Botones para navegar entre secciones */}
                 <div className='flex items-center'>
                   {activeSectionIndex !== 0 && (
                     <button

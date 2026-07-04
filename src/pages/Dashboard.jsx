@@ -54,6 +54,7 @@ const Dashboard = () => {
           Welcome, Joe Doe
         </p>
 
+        {/* Create / Upload Resume -> Resume Builder con el id del nuevo documento creado*/}
         <div className='flex gap-4'>
           <button
             onClick={() => setShowCreateResume(true)}
@@ -74,6 +75,7 @@ const Dashboard = () => {
 
         <hr className='border-slate-300 my-6 sm:w-[305px]' />
 
+        {/* Se muestran los resume guardados */}
         <div className='grid grid-cols-2 sm:flex flex-wrap gap-4'>
           {allResumes.map((resume, index) => {
             const baseColor = colors[index % colors.length]; // Permite recorrer un array en bucle sin salirte nunca de sus límites.  Si index va de 0, 1, 2, 3, 4, 5, 6, 7, 8…, los resultados del módulo son 0, 1, 2, 0, 1, 2, 0, 1, 2… y siempre caen dentro del array.
