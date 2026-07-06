@@ -10,6 +10,7 @@ import ProfessionalSummary from '../components/ProfessionalSummary';
 import ExperienceForm from '../components/ExperienceForm';
 import EducationForm from '../components/EducationForm';
 import ProjectForm from '../components/ProjectForm';
+import SkillsForm from '../components/SkillsForm';
 
 const ResumeBuilder = () => {
 
@@ -150,6 +151,12 @@ const ResumeBuilder = () => {
                   <ProjectForm
                     data={resumeData.project}
                     onChange={(data) => setResumeData(prev => ({ ...prev, project: data }))} // setter para cambiar los proyectos profesionales del resume
+                  />
+                )}
+                {activeSection.id === "skills" && (
+                  <SkillsForm
+                    data={resumeData.skills}
+                    onChange={(data) => setResumeData(prev => ({ ...prev, skills: data }))} // setter para cambiar las habilidades profesionales del resume
                   />
                 )}
               </div>
