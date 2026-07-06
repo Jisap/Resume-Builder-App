@@ -26,7 +26,7 @@ const ExperienceForm = ({ data, onChange }) => {             // Se recibe la exp
     onChange(updated)                                        // Se actualiza el estado con la experiencia modificada
   }
 
-  // Flujo: Escribimos algo en el input -> onChange -> updateExperience -> Clona la data y actualiza el campo -> onChange (del father) -> Se actualiza el estado del padre -> ExperienceForm recibe la data actualizada
+  // Flujo: Escribimos algo en el input -> onChange -> updateExperience -> Clona la data y actualiza el campo -> onChange (del father) -> Se actualiza el estado del padre -> re renderizacion del componente padre -> ExperienceForm recibe la data actualizada
 
   return (
     <div className="space-y-6">
