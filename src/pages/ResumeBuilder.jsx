@@ -6,6 +6,7 @@ import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
 import TemplateSelector from '../components/TemplateSelector';
 import ColorPicker from '../components/ColorPicker';
+import ProfessionalSummary from '../components/ProfessionalSummary';
 
 const ResumeBuilder = () => {
 
@@ -84,7 +85,7 @@ const ResumeBuilder = () => {
 
                   <ColorPicker
                     selectedColor={resumeData.accent_color}
-                    onChange={(color) => setResumeData(prev => ({ ...prev, accent_color: color }))}
+                    onChange={(color) => setResumeData(prev => ({ ...prev, accent_color: color }))} // setter para cambiar el color de acento en el resume
                   />
                 </div>
 
@@ -115,14 +116,20 @@ const ResumeBuilder = () => {
               {/* Form Content */}
               <div className='space-y-6'>
                 {activeSection.id === "personal" && (
-                  <div>
-                    <PersonalInfoForm
-                      data={resumeData.personal_info}
-                      onChange={(data) => { setResumeData(prev => ({ ...prev, personal_info: data })) }}
-                      removeBackground={removeBackground}
-                      setRemoveBackground={setRemoveBackground}
-                    />
-                  </div>
+                  <PersonalInfoForm
+                    data={resumeData.personal_info}
+                    onChange={(data) => { setResumeData(prev => ({ ...prev, professional_summary: data })) }} // setter para cambiar la info del autor del resume
+                    setResumeData={setResumeData}
+                    removeBackground={removeBackground}
+                    setRemoveBackground={setRemoveBackground}
+                  />
+                )}
+
+                {activeSection.id === 'summary' && (
+                  <ProfessionalSummary
+                    data={resumeData.professional_summary}
+                    onChange={(summary) => setResumeData(prev => ({ ...prev, professional_summary: summary }))} // setter para cambiar la info professional del resume
+                  />
                 )}
               </div>
             </div>
