@@ -8,6 +8,7 @@ import TemplateSelector from '../components/TemplateSelector';
 import ColorPicker from '../components/ColorPicker';
 import ProfessionalSummary from '../components/ProfessionalSummary';
 import ExperienceForm from '../components/ExperienceForm';
+import EducationForm from '../components/EducationForm';
 
 const ResumeBuilder = () => {
 
@@ -94,7 +95,7 @@ const ResumeBuilder = () => {
                 <div className='flex items-center'>
                   {activeSectionIndex !== 0 && (
                     <button
-                      onClick={() => setActiveSectionIndex(prevIndex => Math.max(prevIndex - 1, sections.length - 1))}
+                      onClick={() => setActiveSectionIndex(prevIndex => Math.max(prevIndex - 1, 0))}
                       disabled={activeSectionIndex === 0}
                       className='flex items-center gap-1 p-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 transition-all'
                     >
@@ -136,6 +137,12 @@ const ResumeBuilder = () => {
                   <ExperienceForm
                     data={resumeData.experience}
                     onChange={(data) => setResumeData(prev => ({ ...prev, experience: data }))} // setter para cambiar la experiencia profesional del resume
+                  />
+                )}
+                {activeSection.id === "education" && (
+                  <EducationForm
+                    data={resumeData.education}
+                    onChange={(data) => setResumeData(prev => ({ ...prev, education: data }))} // setter para cambiar la educación profesional del resume
                   />
                 )}
               </div>
