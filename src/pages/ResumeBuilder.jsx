@@ -118,7 +118,7 @@ const ResumeBuilder = () => {
                 {activeSection.id === "personal" && (
                   <PersonalInfoForm
                     data={resumeData.personal_info}
-                    onChange={(data) => { setResumeData(prev => ({ ...prev, professional_summary: data })) }} // setter para cambiar la info del autor del resume
+                    onChange={(data) => { setResumeData(prev => ({ ...prev, professional_summary: data })) }} // setter para cambiar la info personal del autor del resume
                     setResumeData={setResumeData}
                     removeBackground={removeBackground}
                     setRemoveBackground={setRemoveBackground}
@@ -128,7 +128,7 @@ const ResumeBuilder = () => {
                 {activeSection.id === 'summary' && (
                   <ProfessionalSummary
                     data={resumeData.professional_summary}
-                    onChange={(summary) => setResumeData(prev => ({ ...prev, professional_summary: summary }))} // setter para cambiar la info professional del resume
+                    onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))} // setter para cambiar la info professional del resume
                   />
                 )}
               </div>
