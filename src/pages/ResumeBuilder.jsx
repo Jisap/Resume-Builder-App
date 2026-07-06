@@ -7,6 +7,7 @@ import ResumePreview from '../components/ResumePreview';
 import TemplateSelector from '../components/TemplateSelector';
 import ColorPicker from '../components/ColorPicker';
 import ProfessionalSummary from '../components/ProfessionalSummary';
+import ExperienceForm from '../components/ExperienceForm';
 
 const ResumeBuilder = () => {
 
@@ -118,7 +119,7 @@ const ResumeBuilder = () => {
                 {activeSection.id === "personal" && (
                   <PersonalInfoForm
                     data={resumeData.personal_info}
-                    onChange={(data) => { setResumeData(prev => ({ ...prev, professional_summary: data })) }} // setter para cambiar la info personal del autor del resume
+                    onChange={(data) => { setResumeData(prev => ({ ...prev, personal_info: data })) }} // setter para cambiar la info personal del autor del resume
                     setResumeData={setResumeData}
                     removeBackground={removeBackground}
                     setRemoveBackground={setRemoveBackground}
@@ -129,6 +130,12 @@ const ResumeBuilder = () => {
                   <ProfessionalSummary
                     data={resumeData.professional_summary}
                     onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))} // setter para cambiar la info professional del resume
+                  />
+                )}
+                {activeSection.id === "experience" && (
+                  <ExperienceForm
+                    data={resumeData.experience}
+                    onChange={(data) => setResumeData(prev => ({ ...prev, experience: data }))} // setter para cambiar la experiencia profesional del resume
                   />
                 )}
               </div>
