@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
 import { dummyResumeData } from '../assets/assets';
-import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, FileText, FolderIcon, GraduationCap, Sparkles, User } from 'lucide-react';
+import { ArrowLeftIcon, Briefcase, ChevronLeft, ChevronRight, Download, EyeIcon, EyeOffIcon, FileText, FolderIcon, GraduationCap, Share2Icon, Sparkles, User } from 'lucide-react';
 import PersonalInfoForm from '../components/PersonalInfoForm';
 import ResumePreview from '../components/ResumePreview';
 import TemplateSelector from '../components/TemplateSelector';
@@ -55,7 +55,26 @@ const ResumeBuilder = () => {
 
   useEffect(() => {
     loadExistingResume()
-  }, [resumeId])
+  }, [resumeId]);
+
+  const changeResumeVisibility = async () => {
+    setResumeData(prev => ({ ...prev, public: !prev.public }))
+  }
+
+  const handleShare = () => {
+    const frontendURL = window.location.href.split('/app/')[0]; // Obtiene la url base eliminando '/app/'
+    const resumeUrl = frontendURL + "/view/" + resumeId;        // Construye la url del resume publico 
+
+    if (navigator.share) {                                      // Si el navegador soporta el metodo share
+      navigator.share({ url: resumeUrl, text: "My Resume", })   // Comparte la url del resume publico 
+    } else {                                                    // Si el navegador no soporta el metodo share
+      alert('Share not supported on this browser.')             // Muestra una alerta con el mensaje de error
+    }
+  };
+
+  const downloadResume = () => {
+    window.print()
+  }
 
   return (
     <div className='max-w-7xl mx-auto px-4 py-6'>
@@ -160,13 +179,41 @@ const ResumeBuilder = () => {
                   />
                 )}
               </div>
+
+              <button
+                className='bg-gradient-to-br from-green-100 to-green-200 rinf-grren-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'
+              >
+                Save Changes
+              </button>
             </div>
           </div>
 
           {/* Right Panel - Preview */}
           <div className='lg:col-span-7 max-lg:mt-6'>
-            <div>
-              {/* buttons */}
+            <div className='relative w-full'>
+              <div className='absolute -top-10 bottom-3 left-0 right-0 flex items-center justify-end gap-2'>
+                {resumeData.public && (
+                  <button
+                    className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-purple-100 to-purple-600 rounded-lg ring-purple-300 hover:ring transition-colors'
+                    onClick={handleShare}
+                  >
+                    <Share2Icon className="size-4" /> Share
+                  </button>
+                )}
+
+                <button
+                  onClick={changeResumeVisibility}
+                  className='flex items-center p-2 px-4 gap-2 text-xs bg-gradient-to-br from-blue-100 to-blue-600 rounded-lg ring-blue-300 hover:ring transition-colors'>
+                  {resumeData.public ? <EyeIcon className='size-4' /> : <EyeOffIcon className='size-4' />}
+                  {resumeData.public ? 'Public' : 'Private'}
+                </button>
+
+                <button
+                  onClick={downloadResume}
+                  className='flex items-center p-2 px-6 py-2 gap-2 text-xs bg-gradient-to-br from-green-100 to-green-600 rounded-lg ring-green-300 hover:ring transition-colors'>
+                  <Download className='size-4' /> Download
+                </button>
+              </div>
             </div>
 
             {/* Resume preview */}
