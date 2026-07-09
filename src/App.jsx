@@ -15,14 +15,14 @@ import { Toaster } from "react-hot-toast"
 
 const App = () => {
 
-  const dispatch = useDispatch();                      // Función que permite enviar acciones a Redux
+  const dispatch = useDispatch();                                                                // Función que permite enviar acciones a Redux
   const getUserData = async () => {
-    const token = localStorage.getItem('token');       // Obtenemos el token del localStorage
+    const token = localStorage.getItem('token');                                                 // Obtenemos el token del localStorage
     try {
       if (token) {
         const { data } = await api.get("/api/user/data", { headers: { Authorization: token } })  // Petición GET al backend para obtener los datos del usuario
         if (data.user) {                                                                         // Si obtenemos los datos del usuario, 
-          dispatch(login({ token, user: data.user }))                                            // los enviamos a Redux
+          dispatch(login({ token, user: data.user }))                                            // los enviamos a Redux -> establece el estado global del user
         }
         dispatch(setLoading(false));
       } else {

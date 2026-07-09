@@ -26,7 +26,7 @@ const Login = () => {
     e.preventDefault()
     try {
       const { data } = await api.post(`/api/users/${state}`, formData); // Petición al backend para iniciar sesión o registrarse
-      dispatch(login(data));                                            // Enviamos los datos del usuario al estado global
+      dispatch(login(data));                                            // Enviamos los datos del usuario al estado global con la res del backend -> layout renderiza o no según respuesta
       localStorage.setItem("token", data.token);                        // Guardamos el token en el localStorage
       toast.success(data.message);                                      // Mostramos un mensaje de éxito
     } catch (error) {
