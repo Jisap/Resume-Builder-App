@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import toast from 'react-hot-toast'
 import api from '../configs/api'
+import pdfToText from 'react-pdftotext';
 
 
 const Dashboard = () => {
@@ -19,6 +20,7 @@ const Dashboard = () => {
   const [resume, setResume] = useState(null);
   const [editResumeId, setEditResumeId] = useState(null);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
 
 
   const loadAllResumes = async () => {
@@ -42,10 +44,24 @@ const Dashboard = () => {
   }
 
   const uploadResume = async (event) => {
+    // event.preventDefault();
+    // setShowUploadResume(false);
+    // navigate(`/app/builder/res123`)
     event.preventDefault();
-    setShowUploadResume(false);
-    navigate(`/app/builder/res123`)
+    setIsLoading(true);
+    try {
+      const resumeText = await pdfToText(resume);
+      const { data } = await api.post('/api/ai/upload-resume', { title, resumeText }, { headers: { Authorization: token } });
+      setTitle("");
+      setResume(null);
+      setShowUploadResume(false);
+      navigate(`/app/builder/${data.resumeId}`)
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message)
+    }
+    setIsLoading(false);
   }
+
 
   const editTitle = async (event) => {
     event.preventDefault();
@@ -227,8 +243,11 @@ const Dashboard = () => {
                   />
                 </div>
 
-                <button className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
-                  Upload Resume
+                <button
+                  disabled={isLoading}
+                  className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors'
+                >
+                  {isLoading ? 'Processing...' : 'Upload Resume'}
                 </button>
 
                 <XIcon
@@ -261,6 +280,8 @@ const Dashboard = () => {
                   placeholder='Enter resume title'
                   className='w-full px-4 py-2 mb-4 focus:border-green-600 ring-green-600'
                   required
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
                 />
 
                 <button className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
