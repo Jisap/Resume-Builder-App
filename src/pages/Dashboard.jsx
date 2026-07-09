@@ -2,9 +2,14 @@ import { FilePenLineIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCl
 import React, { useEffect, useState } from 'react'
 import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import toast from 'react-hot-toast'
+import api from '../configs/api'
 
 
 const Dashboard = () => {
+
+  const { user, token } = useSelector(state => state.auth);
 
   const colors = ["#9333ea", "#d97706", "#dc2626", "#0284c7", "#16a34a"]
   const [allResumes, setAllResumes] = useState([]);
@@ -21,9 +26,19 @@ const Dashboard = () => {
   };
 
   const createResume = async (event) => {
-    event.preventDefault();
-    setShowCreateResume(false);
-    navigate(`/app/builder/res123`)
+    // event.preventDefault();
+    // setShowCreateResume(false);
+    // navigate(`/app/builder/res123`)
+    try {
+      event.preventDefault();
+      const { data } = await api.post('/api/resumes/create', { title }, { headers: { Authorization: token } });
+      setAllResumes([...allResumes, data.resume]);
+      setTitle('');
+      setShowCreateResume(false);
+      navigate(`/app/builder/${data.resume._id}`)
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message)
+    }
   }
 
   const uploadResume = async (event) => {
@@ -143,7 +158,10 @@ const Dashboard = () => {
                   placeholder='Enter resume title'
                   className='w-full px-4 py-2 mb-4 focus:border-green-600 ring-green-600'
                   required
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
                 />
+
 
                 <button className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors'>
                   Create Resume
