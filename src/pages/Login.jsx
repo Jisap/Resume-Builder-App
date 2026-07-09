@@ -1,8 +1,13 @@
 import { Lock, Mail, User2Icon } from 'lucide-react'
 import React, { useState } from 'react'
+import api from '../configs/api';
+import { useDispatch } from 'react-redux';
+import { login } from '../app/features/authSlice';
+import toast from 'react-hot-toast';
 
 const Login = () => {
 
+  const dispatch = useDispatch();
   const query = new URLSearchParams(window.location.search); // http://localhost:5173/login?state=login o register
   const urlState = query.get("state")
 
@@ -19,7 +24,14 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-
+    try {
+      const { data } = await api.post(`/api/users/${state}`, formData); // Petición al backend para iniciar sesión o registrarse
+      dispatch(login(data));                                            // Enviamos los datos del usuario al estado global
+      localStorage.setItem("token", data.token);                        // Guardamos el token en el localStorage
+      toast.success(data.message);                                      // Mostramos un mensaje de éxito
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+    }
   }
 
   const handleChange = (e) => {
