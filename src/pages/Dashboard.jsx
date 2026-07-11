@@ -70,13 +70,31 @@ const Dashboard = () => {
 
 
   const editTitle = async (event) => {
-    event.preventDefault();
+    try {
+      event.preventDefault();
+      const { data } = await api.put(`/api/resumes/update`, {
+        resumeId: editResumeId,
+        resumeData: { title }
+      }, { headers: { Authorization: token } });
+      setAllResumes(allResumes.map(resume => resume._id === editResumeId ? { ...resume, title } : resume));
+      setTitle("");
+      setEditResumeId("");
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
+    }
   }
 
   const deleteResume = async (resumeId) => {
-    const confirm = window.confirm("Are you sure to delete this resume?");
-    if (confirm) {
-      setAllResumes(prev => prev.filter(resume => resume._id !== resumeId))
+    try {
+      const confirm = window.confirm("Are you sure to delete this resume?");
+      if (confirm) {
+        const { data } = await api.delete(`/api/resumes/delete/${resumeId}`, { headers: { Authorization: token } });
+        setAllResumes(allResumes.filter(resume => resume._id !== resumeId));
+        toast.success(data.message);
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message || error.message);
     }
   }
 
@@ -251,9 +269,10 @@ const Dashboard = () => {
 
                 <button
                   disabled={isLoading}
-                  className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors'
+                  className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2'
                 >
-                  {isLoading ? 'Processing...' : 'Upload Resume'}
+                  {isLoading && <LoaderCircleIcon className="animate-spin size-4 text-white" />}
+                  {isLoading ? "Uploading..." : "Upload Resume"}
                 </button>
 
                 <XIcon
@@ -272,7 +291,7 @@ const Dashboard = () => {
           editResumeId && (
             <form
               onSubmit={editTitle}
-              onClick={() => setEditResumeId(false)}
+              onClick={() => setEditResumeId(null)}
               className='fixed inset-0 bg-black/70 backdrop-blur bg-opacity-50 z-10 flex items-center justify-center'
             >
               <div
