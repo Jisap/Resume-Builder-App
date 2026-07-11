@@ -18,26 +18,26 @@ import toast from 'react-hot-toast';
 // Garantiza valores por defecto al recibir un documento de MongoDB
 // El esquema ya usa los mismos nombres que el frontend, así que solo normalizamos defaults
 const normalizeResume = (resume) => ({
-  _id:                  resume._id || "",
-  title:                resume.title || "",
+  _id: resume._id || "",
+  title: resume.title || "",
   personal_info: {
-    full_name:  resume.personal_info?.full_name  || "",
+    full_name: resume.personal_info?.full_name || "",
     profession: resume.personal_info?.profession || "",
-    email:      resume.personal_info?.email      || "",
-    phone:      resume.personal_info?.phone      || "",
-    location:   resume.personal_info?.location   || "",
-    linkedin:   resume.personal_info?.linkedin   || "",
-    website:    resume.personal_info?.website    || "",
-    image:      resume.personal_info?.image      || "",
+    email: resume.personal_info?.email || "",
+    phone: resume.personal_info?.phone || "",
+    location: resume.personal_info?.location || "",
+    linkedin: resume.personal_info?.linkedin || "",
+    website: resume.personal_info?.website || "",
+    image: resume.personal_info?.image || "",
   },
   professional_summary: resume.professional_summary || "",
-  experience:           resume.experience           || [],
-  education:            resume.education            || [],
-  project:              resume.project              || [],
-  skills:               resume.skills               || [],
-  template:             resume.template             || "classic",
-  accent_color:         resume.accent_color         || "#3B82F6",
-  public:               resume.public               ?? false,
+  experience: resume.experience || [],
+  education: resume.education || [],
+  project: resume.project || [],
+  skills: resume.skills || [],
+  template: resume.template || "classic",
+  accent_color: resume.accent_color || "#3B82F6",
+  public: resume.public ?? false,
 });
 
 const ResumeBuilder = () => {
@@ -226,6 +226,7 @@ const ResumeBuilder = () => {
                   <ProfessionalSummary
                     data={resumeData.professional_summary}
                     onChange={(data) => setResumeData(prev => ({ ...prev, professional_summary: data }))} // setter para cambiar la info professional del resume
+                    setResumeData={setResumeData}
                   />
                 )}
                 {activeSection.id === "experience" && (
