@@ -15,26 +15,27 @@ import { useSelector } from 'react-redux';
 import api from '../configs/api';
 import toast from 'react-hot-toast';
 
-// Normaliza el documento que devuelve MongoDB al formato que usa el frontend
+// Garantiza valores por defecto al recibir un documento de MongoDB
+// El esquema ya usa los mismos nombres que el frontend, así que solo normalizamos defaults
 const normalizeResume = (resume) => ({
   _id:                  resume._id || "",
   title:                resume.title || "",
   personal_info: {
-    full_name:  resume.personal_info?.full_name  || resume.personalInfo?.fullName  || "",
-    email:      resume.personal_info?.email      || resume.personalInfo?.email      || "",
-    phone:      resume.personal_info?.phone      || resume.personalInfo?.phone      || "",
-    location:   resume.personal_info?.location   || resume.personalInfo?.location   || "",
-    linkedin:   resume.personal_info?.linkedin   || resume.personalInfo?.linkedin   || "",
-    website:    resume.personal_info?.website    || resume.personalInfo?.github     || "",
-    profession: resume.personal_info?.profession || resume.personalInfo?.jobTitle   || "",
-    image:      resume.personal_info?.image      || "",   // siempre string o File
+    full_name:  resume.personal_info?.full_name  || "",
+    profession: resume.personal_info?.profession || "",
+    email:      resume.personal_info?.email      || "",
+    phone:      resume.personal_info?.phone      || "",
+    location:   resume.personal_info?.location   || "",
+    linkedin:   resume.personal_info?.linkedin   || "",
+    website:    resume.personal_info?.website    || "",
+    image:      resume.personal_info?.image      || "",
   },
   professional_summary: resume.professional_summary || "",
   experience:           resume.experience           || [],
   education:            resume.education            || [],
   project:              resume.project              || [],
   skills:               resume.skills               || [],
-  template:             resume.template             || resume.templateTheme || "classic",
+  template:             resume.template             || "classic",
   accent_color:         resume.accent_color         || "#3B82F6",
   public:               resume.public               ?? false,
 });
