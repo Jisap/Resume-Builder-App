@@ -1,4 +1,4 @@
-import { FilePenLineIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon } from 'lucide-react'
+import { FilePenLineIcon, LoaderCircleIcon, PencilIcon, PlusIcon, TrashIcon, UploadCloud, UploadCloudIcon, XIcon } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { dummyResumeData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
@@ -54,16 +54,28 @@ const Dashboard = () => {
     // setShowUploadResume(false);
     // navigate(`/app/builder/res123`)
     event.preventDefault();
+    if (!resume) {
+      toast.error("Please select a PDF file first.");
+      return;
+    }
+    if (!title.trim()) {
+      toast.error("Please enter a title for the resume.");
+      return;
+    }
     setIsLoading(true);
     try {
+      console.log("Extracting text from PDF:", resume.name);
       const resumeText = await pdfToText(resume);
+      console.log("PDF text extracted successfully, length:", resumeText?.length);
+
       const { data } = await api.post('/api/ai/upload-resume', { title, resumeText }, { headers: { Authorization: token } });
       setTitle("");
       setResume(null);
       setShowUploadResume(false);
       navigate(`/app/builder/${data.resumeId}`)
     } catch (error) {
-      toast.error(error?.response?.data?.message || error.message)
+      console.error("Error during resume upload:", error);
+      toast.error(error?.response?.data?.message || error.message || "Failed to parse or upload the PDF file.");
     }
     setIsLoading(false);
   }
@@ -268,7 +280,7 @@ const Dashboard = () => {
                 </div>
 
                 <button
-                  disabled={isLoading}
+                  disabled={isLoading || !resume || !title.trim()}
                   className='w-full py-2 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2'
                 >
                   {isLoading && <LoaderCircleIcon className="animate-spin size-4 text-white" />}
