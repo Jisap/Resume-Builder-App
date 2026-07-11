@@ -11,10 +11,38 @@ import ExperienceForm from '../components/ExperienceForm';
 import EducationForm from '../components/EducationForm';
 import ProjectForm from '../components/ProjectForm';
 import SkillsForm from '../components/SkillsForm';
+import { useSelector } from 'react-redux';
+import api from '../configs/api';
+import toast from 'react-hot-toast';
+
+// Normaliza el documento que devuelve MongoDB al formato que usa el frontend
+const normalizeResume = (resume) => ({
+  _id:                  resume._id || "",
+  title:                resume.title || "",
+  personal_info: {
+    full_name:  resume.personal_info?.full_name  || resume.personalInfo?.fullName  || "",
+    email:      resume.personal_info?.email      || resume.personalInfo?.email      || "",
+    phone:      resume.personal_info?.phone      || resume.personalInfo?.phone      || "",
+    location:   resume.personal_info?.location   || resume.personalInfo?.location   || "",
+    linkedin:   resume.personal_info?.linkedin   || resume.personalInfo?.linkedin   || "",
+    website:    resume.personal_info?.website    || resume.personalInfo?.github     || "",
+    profession: resume.personal_info?.profession || resume.personalInfo?.jobTitle   || "",
+    image:      resume.personal_info?.image      || "",   // siempre string o File
+  },
+  professional_summary: resume.professional_summary || "",
+  experience:           resume.experience           || [],
+  education:            resume.education            || [],
+  project:              resume.project              || [],
+  skills:               resume.skills               || [],
+  template:             resume.template             || resume.templateTheme || "classic",
+  accent_color:         resume.accent_color         || "#3B82F6",
+  public:               resume.public               ?? false,
+});
 
 const ResumeBuilder = () => {
 
   const { resumeId } = useParams(); // id desde los params de la url
+  const { token } = useSelector(state => state.auth);
 
   const [resumeData, setResumeData] = useState({
     _id: "",
@@ -30,11 +58,22 @@ const ResumeBuilder = () => {
     public: false,
   });
 
-  const loadExistingResume = () => {
-    const resume = dummyResumeData.find(resume => resume._id === resumeId)
-    if (resume) {
-      setResumeData(resume)          // se carga el resume encontrado con el id
-      document.title = resume.title  // Cambio de nombre de la pestaña del navegador
+  const loadExistingResume = async () => {
+    //const resume = dummyResumeData.find(resume => resume._id === resumeId)
+    // if (resume) {
+    //   setResumeData(resume)          // se carga el resume encontrado con el id
+    //   document.title = resume.title  // Cambio de nombre de la pestaña del navegador
+    // }
+
+    try {
+      const { data } = await api.get('/api/resumes/get/' + resumeId, { headers: { Authorization: token } })
+      if (data.resume) {
+        const loadedResume = normalizeResume(data.resume);
+        setResumeData(loadedResume);
+        document.title = loadedResume.title || "Resume Builder";
+      }
+    } catch (error) {
+      console.log(error.message);
     }
   };
 
@@ -58,7 +97,17 @@ const ResumeBuilder = () => {
   }, [resumeId]);
 
   const changeResumeVisibility = async () => {
-    setResumeData(prev => ({ ...prev, public: !prev.public }))
+    // setResumeData(prev => ({ ...prev, public: !prev.public }))
+    try {
+      const formData = new FormData()
+      formData.append("resumeId", resumeId)
+      formData.append("resumeData", JSON.stringify({ public: !resumeData.public }))
+      const { data } = await api.put('/api/resumes/update', formData, { headers: { Authorization: token } })
+      setResumeData({ ...resumeData, public: !resumeData.public })
+      toast.success(data.message)
+    } catch (error) {
+      console.log("Error saving resume:", error)
+    }
   }
 
   const handleShare = () => {
@@ -74,6 +123,30 @@ const ResumeBuilder = () => {
 
   const downloadResume = () => {
     window.print()
+  }
+
+  const saveResume = async () => {
+    try {
+      let updatedResumeData = structuredClone(resumeData)
+      // Remov eimag from updatedResumeData
+      if (typeof resumeData.personal_info.image === "object") {
+        delete updatedResumeData.personal_info.image
+      }
+
+      const formData = new FormData()
+      formData.append("resumeId", resumeId)
+      formData.append("resumeData", JSON.stringify(updatedResumeData))
+      removeBackground && formData.append("removeBackground", "yes")
+      typeof resumeData.personal_info.image === "object" && formData.append("image", resumeData.personal_info.image)
+
+      const { data } = await api.put("/api/resumes/update", formData, { headers: { Authorization: token } })
+      setResumeData(normalizeResume(data.resume))  // normaliza para mantener la forma del estado
+      toast.success(data.message)
+
+
+    } catch (error) {
+      console.error("Error saving resume:", error)
+    }
   }
 
   return (
@@ -181,6 +254,7 @@ const ResumeBuilder = () => {
               </div>
 
               <button
+                onClick={() => { toast.promise(saveResume(), { loading: "Saving...", success: "Saved!", error: "Error saving" }) }}
                 className='bg-gradient-to-br from-green-100 to-green-200 rinf-grren-300 text-green-600 ring hover:ring-green-400 transition-all rounded-md px-6 py-2 mt-6 text-sm'
               >
                 Save Changes
