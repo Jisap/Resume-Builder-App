@@ -1,7 +1,15 @@
-import { Briefcase, Plus, Sparkles, Trash2 } from "lucide-react"
+import { Briefcase, Loader2, Plus, Sparkles, Trash2 } from "lucide-react"
+import { useSelector } from "react-redux";
+import api from "../configs/api";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 
 const ExperienceForm = ({ data, onChange }) => {             // Se recibe la experience del resume y el setter para cambiarla
+
+  const { token } = useSelector(state => state.auth);
+  const [generatingIndex, setGeneratingIndex] = useState(-1);
+
 
   const addExperience = () => {
     const newExperience = {                                  // Se crea un nuevo objeto de experiencia vacio
@@ -13,7 +21,7 @@ const ExperienceForm = ({ data, onChange }) => {             // Se recibe la exp
       is_current: false
     }
 
-    onChange([...data, newExperience]);                      // Se actualiza el estado con el nuevo objeto de experiencia
+    onChange([...data, newExperience]);                      // Se actualiza el estado con el nuevo objeto de experiencia. De esta manera se crea un nuevo objeto dentro del array para rellenar.
   };
 
   const removeExperience = (index) => {
@@ -27,6 +35,23 @@ const ExperienceForm = ({ data, onChange }) => {             // Se recibe la exp
   }
 
   // Flujo: Escribimos algo en el input -> onChange -> updateExperience -> Clona la data y actualiza el campo -> onChange (del father) -> Se actualiza el estado del padre -> re renderizacion del componente padre -> ExperienceForm recibe la data actualizada
+
+  const generateDescription = async (index) => {
+    setGeneratingIndex(index);
+    const experience = data[index];
+    const prompt = `enhance this job description ${experience.description} for the position of ${experience.position} at the company ${experience.company}. The description should be written in a professional tone and should highlight the candidate's responsabilities and achievements. `
+
+    try {
+      const response = await api.post('/api/ai/enhance-job-desc', { userContent: prompt }, { headers: { Authorization: token } })
+      updateExperience(index, "description", response.data.enhanceContent)
+    } catch (error) {
+      console.log(error.message)
+      toast.error("Error enhanced job description")
+    } finally {
+      setGeneratingIndex(-1)
+    }
+  }
+
 
   return (
     <div className="space-y-6">
@@ -115,8 +140,15 @@ const ExperienceForm = ({ data, onChange }) => {             // Se recibe la exp
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium text-gray-700">Job Description</label>
-                  <button className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disable:opacity-50">
-                    <Sparkles className="size-3" />
+                  <button
+                    onClick={() => generateDescription(index)}
+                    disabled={generatingIndex === index || !experience.position || !experience.company}
+                    className="flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors disable:opacity-50">
+                    {generatingIndex === index ? (
+                      <Loader2 className="size-3 animate-spin" />
+                    ) : (
+                      <Sparkles className="size-3" />
+                    )}
                     Enhance with AI
                   </button>
                 </div>

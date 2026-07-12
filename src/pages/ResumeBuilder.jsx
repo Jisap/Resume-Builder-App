@@ -135,10 +135,10 @@ const ResumeBuilder = () => {
       }
 
       const formData = new FormData()
-      formData.append("resumeId", resumeId)
-      formData.append("resumeData", JSON.stringify(updatedResumeData))
-      removeBackground && formData.append("removeBackground", "yes")
-      typeof resumeData.personal_info.image === "object" && formData.append("image", resumeData.personal_info.image)
+      formData.append("resumeId", resumeId)                                                                          // Se agrega el id del resume que viene en la url
+      formData.append("resumeData", JSON.stringify(updatedResumeData))                                               // Se agrega el objeto con la informacion del resume que se va a actualizar
+      removeBackground && formData.append("removeBackground", "yes")                                                 // Se agrega la opcion de remover el fondo de la imagen
+      typeof resumeData.personal_info.image === "object" && formData.append("image", resumeData.personal_info.image) // Se agrega la imagen si es que se ha modificado 
 
       const { data } = await api.put("/api/resumes/update", formData, { headers: { Authorization: token } })
       setResumeData(normalizeResume(data.resume))  // normaliza para mantener la forma del estado
